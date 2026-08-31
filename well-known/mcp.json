@@ -1,0 +1,44 @@
+{
+  "version": "1.0",
+  "name": "openfang-rail",
+  "description": "Neutral x402 rail for M2M commerce. Discover monetized tools, get an authoritative price quote, pay with a gasless EIP-3009 voucher, receive a signed receipt.",
+  "url": "REPLACE: https://your-rail-domain",
+  "auth": { "type": "x402", "note": "no API keys; pay per call via the 402 challenge" },
+  "payment": {
+    "protocol": "x402",
+    "network": "base",
+    "asset": "USDC",
+    "flow": "402 challenge -> EIP-3009 signed authorization (X-PAYMENT) -> 200 + signed receipt"
+  },
+  "tools": [
+    {
+      "name": "discover",
+      "description": "List monetized endpoints on the rail with their published price, payout wallet, and reputation.",
+      "call": "POST /v1/tools/discover/call",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string" },
+          "max_price_usdc": { "type": "number" },
+          "min_trust": { "type": "integer", "minimum": 0, "maximum": 100 }
+        }
+      },
+      "example_request": { "input": { "category": "validation", "max_price_usdc": 0.01 } }
+    },
+    {
+      "name": "quote",
+      "description": "Get the authoritative 402 price quote for a specific endpoint call (recipient, amount, nonce, TTL).",
+      "call": "POST /v1/tools/quote/call",
+      "input_schema": {
+        "type": "object",
+        "required": ["endpoint_id"],
+        "properties": {
+          "endpoint_id": { "type": "string" },
+          "args": { "type": "object" }
+        }
+      },
+      "example_request": { "input": { "endpoint_id": "vat-mod97-check", "args": { "vat_number": "BE0776091951" } } }
+    }
+  ],
+  "note": "input is always an OBJECT keyed by the tool's fields (never a bare string). Every tool call: POST /v1/tools/{tool}/call with body {\"input\": { ... }}. Machine-readable OpenAPI at /openapi.yaml is served by the worker, never shadowed by the static site."
+}

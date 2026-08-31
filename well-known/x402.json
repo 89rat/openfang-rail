@@ -1,0 +1,20 @@
+{
+  "x402_version": 1,
+  "environment": "REPLACE: staging | production",
+  "asset": "USDC",
+  "decimals": 6,
+  "network": { "name": "base", "chain_id": 8453 },
+  "token_address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  "authorization_type": "TransferWithAuthorization (EIP-3009)",
+  "signature_scheme": "EIP-712",
+  "eip712_domain": {
+    "name": "USD Coin",
+    "version": "2",
+    "chainId": 8453,
+    "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+  },
+  "challenge_ttl_seconds": 300,
+  "custody": "none",
+  "recipient": "REPLACE: the seller's published payout wallet is returned per-call in the 402 body; this is the rail toll wallet",
+  "notes": "The 402 challenge body is authoritative for recipient, amount, chain, and nonce. Sellers are paid payer-to-seller directly; the rail takes a transparent toll and never holds funds. For Base Sepolia testnet use chain_id 84532, token 0x036CbD53842c5426634e7929541eC2318f3dCF7e, eip712_domain.name \"USDC\"."
+}

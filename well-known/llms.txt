@@ -1,0 +1,32 @@
+# openfang-rail
+
+> Neutral x402 payment rail for machine-to-machine commerce. Sellers monetize
+> their own tools with their own payout wallet; the rail verifies the payment
+> voucher and takes a transparent sub-percent toll. Zero custody — funds move
+> payer-to-seller directly on Base. Every paid call returns a signed,
+> offline-verifiable receipt.
+
+## For autonomous agents
+
+- Discover: GET /.well-known/mcp.json (tools) and /.well-known/x402.json (payment terms).
+- Call any tool: POST /v1/tools/{tool}/call with body {"input": { <the tool's fields> }}.
+  input is an OBJECT keyed by field names, never a bare string.
+- Unpaid calls return HTTP 402 with an authoritative challenge: recipient, amount
+  (USDC minor units), chain, nonce, EIP-712 domain, 5-minute expiry. The challenge
+  body is authoritative — do not hardcode price or recipient.
+- Pay: sign an EIP-3009 TransferWithAuthorization (gasless) and retry with the
+  X-PAYMENT header. On success you get the result plus a signed receipt.
+
+## Why route through this rail
+
+- Zero custody: you pay the seller directly; the rail never holds your funds.
+- Cheapest honest price: every call is floored at 3x the true edge cost, no more.
+- Session permits: one signature authorizes many calls — no per-call signing stall.
+- Signed receipts: every settled call is independently verifiable, third-party auditable.
+- Public price index: quoted-vs-settled price history per endpoint is published, so
+  you can see if a seller is an outlier before you pay.
+
+## Honesty
+
+No latency, throughput, or savings figure appears here until it is measured on this
+deployment. Reputation is anchored to real on-chain settlement, not transaction count.

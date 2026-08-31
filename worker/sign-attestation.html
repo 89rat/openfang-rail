@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8"><title>openfang-rail — sign attestation</title>
+<style>body{font-family:system-ui;max-width:720px;margin:40px auto;padding:0 16px;background:#0b0d10;color:#e8eaed}
+pre{background:#14181d;padding:14px;border-radius:8px;white-space:pre-wrap;word-break:break-all;border:1px solid #2a2f36}
+button{font-size:16px;padding:10px 22px;border-radius:8px;border:0;background:#3b82f6;color:#fff;cursor:pointer}
+button:disabled{background:#374151}.ok{color:#34d399}.warn{color:#f59e0b}.err{color:#f87171}#sig{user-select:all}</style></head><body>
+<h2>openfang-rail — receipt-signer attestation</h2>
+<p>This asks MetaMask for a <b>personal_sign</b> (EIP-191) of the exact string below with the operator wallet
+<code>0xc59c85e661d34084a7769f955d17fd38254a6235</code>. It is a plain message signature — it cannot move funds.
+The resulting signature is public by design (it ships in the worker config).</p>
+<pre id="msg"></pre>
+<p><button id="go">Connect MetaMask &amp; sign</button></p>
+<div id="out"></div>
+<script>
+const EXPECTED = "0xc59c85e661d34084a7769f955d17fd38254a6235";
+const MSG = "openfang-rail: I authorize receipt-signer 0xae851dde8a04c9e6a3a675c6679b5e53b148c118 to issue XDR-1 receipts on my behalf. authorized_by=0xc59c85e661d34084a7769f955d17fd38254a6235";
+document.getElementById("msg").textContent = MSG;
+const out = (h) => document.getElementById("out").innerHTML = h;
+document.getElementById("go").onclick = async () => {
+  try {
+    if (!window.ethereum) return out('<p class="err">MetaMask not detected. Open this page via sign.bat (http://localhost:8402), not as a file.</p>');
+    const [acct] = await window.ethereum.request({ method: "eth_requestAccounts" });
+    if (acct.toLowerCase() !== EXPECTED) return out('<p class="warn">Connected account ' + acct + ' is NOT the operator wallet ' + EXPECTED + '. Switch accounts in MetaMask and click again — do not sign with this one.</p>');
+    const hex = "0x" + Array.from(new TextEncoder().encode(MSG)).map(b => b.toString(16).padStart(2, "0")).join("");
+    const sig = await window.ethereum.request({ method: "personal_sign", params: [hex, acct] });
+    out('<p class="ok">Signed by ' + acct + '. Copy this signature and paste it to the assistant:</p><pre id="sig">' + sig + "</pre>");
+  } catch (e) { out('<p class="err">' + (e && e.message ? e.message : e) + "</p>"); }
+};
+</script></body></html>

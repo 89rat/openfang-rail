@@ -1,0 +1,33 @@
+{
+  "$schema": "https://a2a.dev/schemas/agent-card-v1.json",
+  "name": "openfang-rail",
+  "role": "neutral x402 payment rail for M2M commerce",
+  "description": "Bring-your-own-endpoint x402 rail. Sellers monetize their own tools with their own payout wallet; the rail verifies the EIP-3009 voucher and takes a transparent sub-percent toll. Zero custody: funds move payer to seller directly, on Base. Settlement is verified at the edge; the rail never holds funds.",
+  "operator": {
+    "note": "Set to the real operating entity before publishing. Do not ship a placeholder."
+  },
+  "settlement": {
+    "custody": "none",
+    "asset": "USDC",
+    "network": { "name": "base", "chain_id": 8453 },
+    "authorization_type": "TransferWithAuthorization (EIP-3009)",
+    "signature_scheme": "EIP-712",
+    "note": "The 402 challenge body is always authoritative for recipient, amount, chain, and nonce. Do not hardcode."
+  },
+  "endpoints": {
+    "mcp": "/mcp",
+    "sse": "/sse",
+    "call": "POST /v1/tools/{tool}/call"
+  },
+  "capabilities": [
+    "x402_eip3009",
+    "session_permits",
+    "referral_paybacks",
+    "signed_receipts",
+    "public_price_index"
+  ],
+  "discovery": {
+    "manifests": ["/.well-known/agent.json", "/.well-known/x402.json", "/.well-known/mcp.json", "/llms.txt"]
+  },
+  "honesty": "No latency, throughput, or margin figure is published here because none is measured on this deployment. Numbers are added only after measurement."
+}

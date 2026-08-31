@@ -1,0 +1,22 @@
+[package]
+name = "openfang-engine"
+version = "1.0.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+worker = "0.8.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+k256 = { version = "0.13", default-features = false, features = ["ecdsa", "alloc"] }
+tiny-keccak = { version = "2.0", features = ["keccak"] }
+hex = "0.4"
+js-sys = "0.3"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true

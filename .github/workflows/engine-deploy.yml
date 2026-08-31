@@ -1,0 +1,42 @@
+name: Deploy openfang-engine (Rust compute plane)
+
+on:
+  push:
+    branches: [main]
+    paths: ["engine/**", ".github/workflows/engine-deploy.yml"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            engine/target
+          key: cargo-engine-${{ hashFiles('engine/Cargo.lock') }}
+          restore-keys: cargo-engine-
+
+      - name: Install worker-build
+        run: cargo install -q worker-build
+
+      - name: Build wasm
+        working-directory: engine
+        run: worker-build --release
+
+      - name: Deploy to Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          workingDirectory: engine
+          command: deploy

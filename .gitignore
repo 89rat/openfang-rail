@@ -1,0 +1,9 @@
+node_modules/
+dist/
+target/
+build/
+*.tmp
+.selftest-key
+selftest-receipt.json
+.env
+*.log
