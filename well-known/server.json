@@ -4,11 +4,11 @@
   "title": "openfang-rail",
   "description": "Deterministic IBAN/LEI/VAT/SWIFT/rental-fraud checks via MCP; x402 USDC per call, signed receipts.",
   "version": "1.1.0",
-  "websiteUrl": "https://rail.akrivis.in",
+  "websiteUrl": "https://code402.dev",
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://rail.akrivis.in/mcp"
+      "url": "https://code402.dev/mcp"
     }
   ]
 }

@@ -4,6 +4,8 @@ Deterministic business-identity validation (IBAN, LEI, VAT, UK company number) a
 
 **Live endpoint:** https://rail.akrivis.in · 28 tools · first N calls/day free, then from $0.000999/call (dynamic — idle prices decay toward the floor, demand bumps them; live quotes at [`/health`](https://rail.akrivis.in/health)).
 
+**Canonical branded endpoint:** https://code402.dev — same 28 tools, separately deployed. Both origins settle USDC on Base and share the per-client free-tier quota; pick either.
+
 ## Endpoints
 
 | Path | What it is |

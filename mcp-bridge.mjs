@@ -9,11 +9,11 @@
  * no local state and no secrets — protocol traffic only; free-tier limits
  * of the hosted endpoint apply.
  *
- * Env: MCP_ENDPOINT (default https://rail.akrivis.in/mcp)
+ * Env: MCP_ENDPOINT (default https://code402.dev/mcp)
  */
 import readline from "node:readline";
 
-const ENDPOINT = process.env.MCP_ENDPOINT || "https://rail.akrivis.in/mcp";
+const ENDPOINT = process.env.MCP_ENDPOINT || "https://code402.dev/mcp";
 
 let sessionId = null;
 
