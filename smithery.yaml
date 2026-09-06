@@ -1,0 +1,6 @@
+﻿startCommand:
+  type: stdio
+  config:
+    command: node
+    args:
+      - mcp-bridge.mjs

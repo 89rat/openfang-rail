@@ -212,6 +212,16 @@ async function rpcCall(url: string, method: string, params: unknown[]): Promise<
   return j.result;
 }
 async function rpcUp(url: string): Promise<boolean> { try { await rpcCall(url, "eth_blockNumber", []); return true; } catch { return false; } }
+// EIP-1271 boundary: a contract wallet (smart account) signs with isValidSignature,
+// which is not secp256k1-recoverable, so `from` has code and its signature can only be
+// judged on-chain. Fail closed: an unreadable/absent code result is treated as "not a
+// contract", so the EOA recovery path below remains the strict default.
+async function isContract(env: Env, address: string): Promise<boolean> {
+  try {
+    const code = await rpcCall(env.RPC_URL || DEFAULT_RPC, "eth_getCode", [address, "latest"]);
+    return typeof code === "string" && code !== "0x" && code.length > 2;
+  } catch { return false; }
+}
 async function vSettlementHistory(x: string, env: Env) {
   const a = x.replace(/\s+/g, "").toLowerCase();
   if (!/^0x[0-9a-f]{40}$/.test(a)) return { tool: "settlement-history-check", valid: false, reason: "malformed EVM address (0x + 40 hex)", scope: "on-chain USDC activity over a recent window" };
@@ -455,7 +465,9 @@ async function probeFacilitators(env: Env) {
 
 function manifest(env: Env) {
   const freeN = parseInt(env.FREE_CALLS_PER_DAY || "0", 10);
-  return { version: "1.0", name: "openfang-rail",
+  return { version: "1.1.0", name: "openfang-rail",
+    license: "MIT",
+    repository: "https://github.com/drjsarat/openfang-rail",
     description: "Deterministic business-identifier validation (IBAN/LEI/VAT/UK) + rental due-diligence (deposit-safety, listing-risk, signed verdict), paid per call via x402 (EIP-3009). No scraping, no ML.",
     pricing: { take_rate_bps: launchOn(env) ? 0 : 25, mode: "dynamic-dutch", price_usdc_per_call: "per-tool, dynamic (see tools[].price_usdc floor + price_usdc_ceiling)",
       rule: `idle price decays exponentially to the per-tool floor (tau=${dpNum(env.PRICE_TAU_SECONDS, 1800)}s); every settled sale bumps it x${dpNum(env.PRICE_BUMP, 1.5)}, capped at x${dpNum(env.PRICE_MAX_MULT, 5)} of the floor; GET /health quotes live prices`,
@@ -580,7 +592,14 @@ async function processCall(tool: string, input: any, req: Request, env: Env): Pr
     let dig: Uint8Array;
     try { dig = voucherDigest(dom, vc); } catch { return { status: 402, body: { error: { code: "MALFORMED_PAYMENT", message: "voucher numeric fields malformed (value/validAfter/validBefore must be integer strings)" } } }; }
     const signer = recover(dig, vc.signature);
-    if (!signer || signer.toLowerCase() !== vc.from.toLowerCase()) return { status: 402, body: { error: { code: "BAD_SIGNATURE", message: "voucher signature does not recover to `from`" } } };
+    if (!signer || signer.toLowerCase() !== vc.from.toLowerCase()) {
+      // EIP-1271 contract wallets (smart accounts) are not recoverable — defer their
+      // signature to the on-chain settlement path (USDC's TransferWithAuthorization
+      // validates contract signers via isValidSignature), instead of over-rejecting.
+      if (!(await isContract(env, vc.from))) {
+        return { status: 402, body: { error: { code: "BAD_SIGNATURE", message: "voucher signature does not recover to `from`" } } };
+      }
+    }
     // Replay BEFORE price: with dynamic pricing a used voucher may also be
     // stale-priced, but a burned nonce is dead regardless — say REPLAY, so the
     // buyer doesn't re-sign the same dead nonce at the new price.
@@ -777,6 +796,7 @@ export default {
       for (const t of Object.keys(TOOLS)) prices[t] = await quoteFor(t, env);
       return j({ ok: true, launch_zero_take_rate: launchOn(env), receipt_signer: signerAddr(env), tools: Object.keys(TOOLS), prices, pricing: { mode: "dynamic-dutch", floor_to_ceiling_mult: dpNum(env.PRICE_MAX_MULT, 5), decay_tau_seconds: dpNum(env.PRICE_TAU_SECONDS, 1800), sale_bump: dpNum(env.PRICE_BUMP, 1.5), note: "idle price decays to the per-tool floor; each settled sale bumps it up (capped); this endpoint always quotes live" } });
     }
+    if (url.pathname === "/ping") return j({ status: "pong", timestamp: new Date().toISOString(), service: "openfang-rail" });
     if (url.pathname === "/.well-known/mcp.json") return j(manifest(env));
     if (url.pathname === "/.well-known/x402.json") return j(x402Manifest(env, req));
     if (url.pathname === "/llms.txt") return new Response(llmsTxt(env), { headers: { "content-type": "text/plain; charset=utf-8", ...cors() } });
@@ -805,15 +825,26 @@ export default {
       let rpc: any; try { rpc = await req.json(); } catch { return j({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "Parse error" } }, 400); }
       const id = rpc?.id ?? null;
       const method = rpc?.method;
-      if (method === "initialize") return j({ jsonrpc: "2.0", id, result: { protocolVersion: rpc?.params?.protocolVersion || "2024-11-05", capabilities: { tools: {}, resources: {}, prompts: {} }, serverInfo: { name: "openfang-rail", version: "1.0.0" } } });
+      if (method === "initialize") return j({ jsonrpc: "2.0", id, result: { protocolVersion: rpc?.params?.protocolVersion || "2024-11-05", capabilities: { tools: {}, resources: {}, prompts: {} }, serverInfo: { name: "openfang-rail", version: "1.1.0", license: "MIT" } } });
       if (method === "notifications/initialized") return new Response(null, { status: 204, headers: cors() });
-      if (method === "ping") return j({ jsonrpc: "2.0", id, result: {} });
+      if (method === "ping") return j({ jsonrpc: "2.0", id, result: { status: "pong", timestamp: new Date().toISOString(), service: "openfang-rail" } });
       if (method === "resources/list") return j({ jsonrpc: "2.0", id, result: { resources: [] } });
       if (method === "resources/templates/list") return j({ jsonrpc: "2.0", id, result: { resourceTemplates: [] } });
       if (method === "prompts/list") return j({ jsonrpc: "2.0", id, result: { prompts: [] } });
       // MCP tool names use snake_case (registry-linter convention); REST/receipts
       // keep the canonical kebab id. tools/call accepts BOTH spellings.
-      if (method === "tools/list") return j({ jsonrpc: "2.0", id, result: { tools: Object.entries(TOOLS).map(([name, s]) => ({ name: name.replace(/-/g, "_"), title: s.title, description: s.desc, inputSchema: { ...s.inputSchema, examples: [s.ex] }, outputSchema: s.out, annotations: { title: s.title, readOnlyHint: true, idempotentHint: true, openWorldHint: false } })) } });
+      if (method === "tools/list") return j({ jsonrpc: "2.0", id, result: { tools: Object.entries(TOOLS).map(([name, s]) => {
+        const exOut = outputExample(name);
+        return {
+          name: name.replace(/-/g, "_"),
+          title: s.title,
+          description: s.desc,
+          inputSchema: { ...s.inputSchema, examples: [{ input: s.ex, output: exOut }] },
+          outputSchema: { ...s.out, examples: [exOut] },
+          examples: [{ input: s.ex, output: exOut }],
+          annotations: { title: s.title, readOnlyHint: true, idempotentHint: true, openWorldHint: false }
+        };
+      }) } });
       if (method === "tools/call") {
         const name = String(rpc?.params?.name ?? "");
         const spec = TOOLS[name] ?? TOOLS[name.replace(/_/g, "-")];
