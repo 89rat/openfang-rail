@@ -786,8 +786,24 @@ export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     // CORS preflight + Streamable-HTTP GET: browser-based MCP/x402 registry validators send these.
-    if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors() });
-    if (url.pathname === "/mcp" && req.method === "GET") return new Response(null, { status: 405, headers: { ...cors(), "allow": "POST, OPTIONS" } });
+    if (url.pathname === "/mcp" && req.method === "GET") {
+      return j({
+        service: "openfang-rail",
+        version: "1.1.0",
+        transport: "streamable-http",
+        protocolVersion: "2025-06-18",
+        description: "Deterministic business-identifier validation and rental due-diligence via x402 (USDC on Base).",
+        endpoint: `${url.origin}/mcp`,
+        toolsCount: Object.keys(TOOLS).length,
+        freeTier: "20 calls/day",
+        manifests: {
+          mcp: `${url.origin}/.well-known/mcp.json`,
+          x402: `${url.origin}/.well-known/x402.json`,
+          agentCard: `${url.origin}/.well-known/agent.json`,
+          llmsTxt: `${url.origin}/llms.txt`
+        }
+      }, 200, { "cache-control": "public, max-age=300", ...cors() });
+    }
     if (url.pathname === "/" && req.method === "GET") return new Response(homepage(env, req), { headers: { "content-type": "text/html; charset=utf-8", ...cors() } });
     if (url.pathname === "/health") {
       // Live price ticker (the sniping surface): agents poll this for free to
