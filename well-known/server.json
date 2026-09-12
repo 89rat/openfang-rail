@@ -2,13 +2,13 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.89rat/openfang-rail",
   "title": "openfang-rail",
-  "description": "Deterministic IBAN/LEI/VAT/SWIFT/rental-fraud checks via MCP; x402 USDC per call, signed receipts.",
-  "version": "1.1.0",
-  "websiteUrl": "https://code402.dev",
+  "description": "Deterministic banking, LEI, VAT, SWIFT & compliance checks via MCP with signed XDR-1 receipts.",
+  "version": "1.2.0",
+  "websiteUrl": "https://rail.akrivis.in",
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://code402.dev/mcp"
+      "url": "https://rail.akrivis.in/mcp"
     }
   ]
 }
