@@ -1,0 +1,20 @@
+{
+  "receipt": {
+    "v": "XDR-1",
+    "tool": "iban-check",
+    "tool_version": "1.0.0",
+    "input_hash": "0xab7d4ba329e033c4e5d6255c2d728a3ac138727087128fd58edb6c78e177e512",
+    "output_hash": "0x9dd8f9763c3cb81a39ce2f7a0694f01bc9c9c1e2c9a9d259d96a0bc27a1627b2",
+    "payer": "0x2fF40B2b13b33B9C61018031362D850b10aBA22b",
+    "recipient": "0xc59c85e661d34084a7769f955d17fd38254a6235",
+    "amount": "5000",
+    "nonce": "0xd13027b629eba2c719695d977d725c97442cedc543737452d2a35cdb0c0e070d",
+    "ts": 1791282913,
+    "tier": "paid",
+    "stream_state": "active",
+    "signature": "0x9f7028bb7139e4ae87a3f9e161cecaf4da2d1c8156a0d6fed8da1472f5e259f032c6eb2255167a67903f1945b9377949d1c698c15db6b8283947707663091a141b",
+    "signer": "0xa036e2e3e19c6d02f30b3a9eb0acd057e6d9a5c8",
+    "receipt_hash": "0x8fbef394d70ab6bdf1c1f685ff6576c220d904c4d9cb3be3b7426d9d6bf15cb6"
+  },
+  "expectedSigner": "0xa036e2e3e19c6d02f30b3a9eb0acd057e6d9a5c8"
+}

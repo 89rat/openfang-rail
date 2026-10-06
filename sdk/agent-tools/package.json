@@ -1,0 +1,74 @@
+{
+  "name": "@code-402/agent-tools",
+  "version": "0.2.3",
+  "description": "code402 x402 pay-per-call tools in every agent framework's toolbelt: LangChain, Vercel AI SDK, OpenAI function-calling. Non-custodial; the 402 is authoritative; client-side spend cap.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "code402": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "keywords": [
+    "x402",
+    "mcp",
+    "agents",
+    "langchain",
+    "vercel-ai",
+    "openai",
+    "usdc",
+    "base",
+    "eip-3009",
+    "micropayments",
+    "code402"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/89rat/openfang-rail.git"
+  },
+  "homepage": "https://hcrb.in",
+  "peerDependencies": {
+    "viem": ">=2.0.0",
+    "@langchain/core": ">=0.3.0",
+    "ai": ">=4.0.0",
+    "zod": ">=3.22.0"
+  },
+  "peerDependenciesMeta": {
+    "@langchain/core": {
+      "optional": true
+    },
+    "ai": {
+      "optional": true
+    },
+    "zod": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0",
+    "viem": "^2.21.0",
+    "@types/node": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
