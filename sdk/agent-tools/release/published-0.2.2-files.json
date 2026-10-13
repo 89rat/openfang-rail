@@ -1,0 +1,97 @@
+[
+  {
+    "path": "package/LICENSE",
+    "size": 1064,
+    "sha256": "35f90e94ae550fd309abacdfb64d4badd8e9fa8d20ce3a52221ab780f66afbe9"
+  },
+  {
+    "path": "package/dist/adapters.js",
+    "size": 4547,
+    "sha256": "0721f346dc5b169667e5f5c75c72e065496ab2d12232b16ceff5910eaba77a05"
+  },
+  {
+    "path": "package/dist/challenge.js",
+    "size": 3398,
+    "sha256": "d5d0b8912b62441bd7466260087d02c096b6870f74913ade0420970c6b5629c7"
+  },
+  {
+    "path": "package/dist/cli.js",
+    "size": 10387,
+    "sha256": "c8df724d3677b0dfeba7f9f53c64f8d3e42b5b40adc0d4f85682c53839630ac2"
+  },
+  {
+    "path": "package/dist/client.js",
+    "size": 7556,
+    "sha256": "35b4e1f5b6c2d2ec303b6fff635c6a00b390c5e249ad4ce7c0d9df469637777a"
+  },
+  {
+    "path": "package/dist/index.js",
+    "size": 357,
+    "sha256": "7c503229e9279b84d6a2ab6227fb197649bb7ca130e563d0c4043f30fa964f01"
+  },
+  {
+    "path": "package/dist/receipt.js",
+    "size": 2152,
+    "sha256": "9b4e7e1c35a863f2329b3ac987bc9e3a5135d04012421054680b8a096b79e32f"
+  },
+  {
+    "path": "package/dist/score.js",
+    "size": 5297,
+    "sha256": "ee508601e00f946f2e6c4f951bb761044686756839a64f7c58b2da8794397b22"
+  },
+  {
+    "path": "package/dist/types.js",
+    "size": 1309,
+    "sha256": "686470d9219e736c57966e7576ae4aad0b6e4ab49f27779fa08e9a3289abde28"
+  },
+  {
+    "path": "package/package.json",
+    "size": 1594,
+    "sha256": "a54b55ad19af00471be611b2b783d2e51d030305c80e178090459a8dbc4703dc"
+  },
+  {
+    "path": "package/README.md",
+    "size": 3877,
+    "sha256": "d816af714564b641a2aa8e46fc3e40c0c676b675b97e070ae5bce9139d486cc7"
+  },
+  {
+    "path": "package/dist/adapters.d.ts",
+    "size": 2463,
+    "sha256": "ee0e99bb72c7fccd482c47fc6f875e76d4b6c6961d04cf6d265ab2210b312b2b"
+  },
+  {
+    "path": "package/dist/challenge.d.ts",
+    "size": 465,
+    "sha256": "f57074cecb168072949170479e5809eb37eb253b808f9ea4c1876839c30cb5b1"
+  },
+  {
+    "path": "package/dist/cli.d.ts",
+    "size": 349,
+    "sha256": "c28a43375811b603d8d1af380c2928a4c79a2f1d09aab865e4e570da0f4af171"
+  },
+  {
+    "path": "package/dist/client.d.ts",
+    "size": 1046,
+    "sha256": "9fb8eec9554ac11ce5eebc554f5e3e9cfb764028d051ae18d9099eddf98cb483"
+  },
+  {
+    "path": "package/dist/index.d.ts",
+    "size": 532,
+    "sha256": "2b928d0ef7ddea2b4c34bd2a1e29428a77a3d2f739dc3f199922e44499b3eba7"
+  },
+  {
+    "path": "package/dist/receipt.d.ts",
+    "size": 693,
+    "sha256": "295b558d3fee24104d8771cca344f8fd8d2198b5fd156972b48ed49d71fea3df"
+  },
+  {
+    "path": "package/dist/score.d.ts",
+    "size": 778,
+    "sha256": "1e111235dcd7dca3a31676da63fa25ec812eb8572eb38bb8302ebd17783031fc"
+  },
+  {
+    "path": "package/dist/types.d.ts",
+    "size": 4673,
+    "sha256": "8dfbbebec0051ff48bd74c203bbe14b82638409f8e28d146ca1f5d1da7561a2c"
+  }
+]
