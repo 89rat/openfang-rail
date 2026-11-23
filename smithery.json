@@ -1,26 +1,26 @@
 ﻿{
   "name": "openfang-rail",
-  "displayName": "OpenFang Rail",
-  "description": "Deterministic business-identifier validation (IBAN, LEI, VAT, UK company no.) and rental due-diligence (deposit-safety, listing-risk, signed verdict) with x402 USDC micropayments on Base.",
-  "version": "1.1.0",
-  "homepage": "https://rail.akrivis.in",
-  "repository": "https://github.com/drjsarat/openfang-rail",
+  "displayName": "Code402 — Deterministic Verification & Agent Utility Rail",
+  "description": "58 deterministic x402 pay-per-call verification, ISO 20022, and agent utility tools (IBAN, LEI, VAT, SWIFT/BIC, GSTIN, IFSC, OFAC SDN exact-match, reconciliation) on Base with signed XDR-1 receipts.",
+  "version": "1.3.0",
+  "homepage": "https://code402.dev",
+  "repository": "https://github.com/89rat/openfang-rail",
   "license": "MIT",
   "transport": {
     "type": "streamable-http",
-    "url": "https://rail.akrivis.in/mcp"
+    "url": "https://hcrb.in/mcp"
   },
   "capabilities": {
     "tools": true,
     "resources": false,
     "prompts": false
   },
-  "toolsCount": 19,
+  "toolsCount": 58,
   "payment": {
     "protocol": "x402",
     "network": "base",
     "chainId": 8453,
     "asset": "USDC",
-    "recipient": "0x417da74cdc0d3babf6adc851b6e5c638574c0d58"
+    "recipient": "0xc59c85e661d34084a7769f955d17fd38254a6235"
   }
 }

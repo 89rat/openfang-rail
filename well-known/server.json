@@ -1,14 +1,14 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.89rat/openfang-rail",
-  "title": "openfang-rail",
-  "description": "Deterministic banking, LEI, VAT, SWIFT & compliance checks via MCP with signed XDR-1 receipts.",
-  "version": "1.2.0",
-  "websiteUrl": "https://rail.akrivis.in",
+  "title": "Code402 — Deterministic Verification & Agent Utility Rail",
+  "description": "58 deterministic banking, LEI, VAT, SWIFT, ISO 20022 & agent utility checks via MCP (https://hcrb.in/mcp) with signed XDR-1 receipts.",
+  "version": "1.3.0",
+  "websiteUrl": "https://code402.dev",
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://rail.akrivis.in/mcp"
+      "url": "https://hcrb.in/mcp"
     }
   ]
 }

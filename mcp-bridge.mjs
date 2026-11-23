@@ -9,11 +9,11 @@
  * no local state and no secrets — protocol traffic only; free-tier limits
  * of the hosted endpoint apply.
  *
- * Env: MCP_ENDPOINT (default https://code402.dev/mcp)
+ * Env: MCP_ENDPOINT (default https://hcrb.in/mcp)
  */
 import readline from "node:readline";
 
-const ENDPOINT = process.env.MCP_ENDPOINT || "https://code402.dev/mcp";
+const ENDPOINT = process.env.MCP_ENDPOINT || "https://hcrb.in/mcp";
 
 let sessionId = null;
 
