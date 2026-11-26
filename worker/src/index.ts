@@ -503,7 +503,7 @@ function bazaarInfo(spec: ToolSpec) {
   return { bazaar: { info: {
     input: { type: "http", method: "POST", body: spec.ex },
     inputSchema: spec.inputSchema,
-    output: { example: outputExample(Object.keys(TOOLS).find(k => TOOLS[k] === spec) ?? ""), schema: spec.out },
+    output: { type: "json", example: outputExample(Object.keys(TOOLS).find(k => TOOLS[k] === spec) ?? ""), schema: spec.out },
   } } };
 }
 
@@ -690,7 +690,7 @@ function x402Manifest(env: Env, req?: Request) {
     type: "http",
     method: "POST",
     accepts: [{ scheme: "exact", network: "eip155:" + env.CHAIN_ID, amount: String(TOOL_PRICE[name] ?? 999), maxAmountRequired: String(TOOL_PRICE[name] ?? 999), asset: env.USDC_ADDRESS, payTo: env.RECIPIENT, maxTimeoutSeconds: 300, extra: { name: env.USDC_DOMAIN_NAME, version: "2" } }],
-    extensions: { bazaar: { info: { input: { type: "http", method: "POST", body: spec.ex }, inputSchema: spec.inputSchema, output: { schema: spec.out } } } },
+    extensions: { bazaar: { info: { input: { type: "http", method: "POST", body: spec.ex }, inputSchema: spec.inputSchema, output: { type: "json", example: outputExample(name), schema: spec.out } } } },
   }));
   return { x402_version: 1, environment: env.CHAIN_ID === "8453" ? "production" : "staging",
     extensions: ["bazaar"],
