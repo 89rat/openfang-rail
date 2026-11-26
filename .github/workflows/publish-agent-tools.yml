@@ -1,0 +1,72 @@
+name: Publish reviewed agent-tools 0.2.3
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_commit:
+        description: Exact reviewed commit on sdk/agent-tools-source containing this packet
+        required: true
+        type: string
+
+permissions: {}
+concurrency:
+  group: code402-agent-tools-0.2.3
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.repository == '89rat/openfang-rail' && github.ref == 'refs/heads/sdk/agent-tools-source' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6, official API verified
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6, official API verified
+        with:
+          node-version: '26.9.0'
+          package-manager-cache: false
+      - name: Check reviewed commit and offline artifact predicates
+        env:
+          REVIEWED_RELEASE_COMMIT: ${{ inputs.release_commit }}
+        run: |
+          node sdk/agent-tools/release/verify-artifact.mjs guard
+          node --test sdk/agent-tools/release/verify-artifact.test.mjs
+          node sdk/agent-tools/release/verify-artifact.mjs verify
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '26.9.0'
+          package-manager-cache: false
+      - name: Pin npm client, not SDK dependencies
+        run: npm install --global npm@11.19.1 --ignore-scripts --no-audit --no-fund --registry https://registry.npmjs.org
+      - name: Recheck exact artifact and public registry before the single publish
+        id: preflight
+        env:
+          REVIEWED_RELEASE_COMMIT: ${{ inputs.release_commit }}
+        run: |
+          node sdk/agent-tools/release/verify-artifact.mjs guard
+          node sdk/agent-tools/release/verify-artifact.mjs verify
+          node sdk/agent-tools/release/verify-artifact.mjs registry-before
+      - name: Publish exact reviewed tarball through OIDC
+        if: steps.preflight.outputs.publish_needed == 'true'
+        env:
+          NPM_CONFIG_PROVENANCE: 'false' # private source repository cannot generate npm provenance
+        run: npm publish sdk/agent-tools/release/agent-tools-0.2.3-candidate.tgz --access public --tag latest --ignore-scripts --registry https://registry.npmjs.org
+      - name: Verify public version, latest tag and immutable integrity
+        run: node sdk/agent-tools/release/verify-artifact.mjs registry-after
